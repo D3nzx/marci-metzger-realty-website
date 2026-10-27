@@ -573,17 +573,26 @@ textarea {
   text-underline-offset: 0.2em;
 }
 
-.required-mark {
-  font-size: 0.75rem;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
 .search-widget__submit {
   grid-column: span 2;
   justify-self: stretch;
   align-self: end;
   margin-top: 0;
+}
+
+.search-widget .form-feedback {
+  grid-column: 1 / -1;
+  min-height: 0;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.search-widget .form-feedback:empty {
+  display: none;
 }
 
 .listings {
@@ -1130,11 +1139,11 @@ textarea {
   width: min(34rem, calc(100% - 2rem));
   max-width: none;
   padding: 0;
-  border: 1px solid rgba(196, 165, 116, 0.4);
+  border: 0;
   border-radius: 20px;
   background: var(--cream);
   color: var(--text);
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(12, 11, 10, 0.18);
 }
 
 .message-modal::backdrop {
@@ -1155,9 +1164,9 @@ textarea {
   height: 3.5rem;
   margin-bottom: 1.25rem;
   place-items: center;
-  border: 1px solid rgba(160, 124, 69, 0.35);
+  border: 1px solid var(--accent-gold-deep);
   border-radius: 50%;
-  background: rgba(196, 165, 116, 0.16);
+  background: var(--light-bg);
   color: var(--accent-gold-deep);
   font-family: var(--font-serif);
   font-size: 1.8rem;
@@ -1165,6 +1174,7 @@ textarea {
 
 .message-modal .eyebrow {
   margin-bottom: 0.5rem;
+  color: #121212;
 }
 
 .message-modal h2 {
@@ -1179,10 +1189,11 @@ textarea {
 }
 
 .message-modal__content a {
-  color: var(--accent-gold-deep);
+  color: var(--text);
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 0.15em;
+  white-space: nowrap;
 }
 
 .message-modal__actions {
@@ -1190,6 +1201,19 @@ textarea {
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.75rem;
+}
+
+.message-modal__actions #message-modal-reset {
+  border-color: rgba(31, 27, 22, 0.3);
+  background: transparent;
+  color: var(--text);
+  box-shadow: none;
+}
+
+.message-modal__actions #message-modal-reset:hover {
+  border-color: rgba(31, 27, 22, 0.55);
+  background: rgba(31, 27, 22, 0.05);
+  color: var(--text);
 }
 
 .site-footer {

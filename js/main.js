@@ -529,12 +529,11 @@
       updateGalleryIndicators();
 
       const resultCount = matchingCards.length;
-      searchFeedback.textContent = hasFilters
+      searchFeedback.textContent = hasFilters && resultCount > 0
         ? "Showing " + resultCount + " illustrative sample " +
           (resultCount === 1 ? "listing" : "listings") +
           ". This is not live availability."
         : "";
-      searchFeedback.classList.toggle("is-success", Boolean(searchFeedback.textContent));
       listingsEmpty.hidden = resultCount > 0;
       document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
     });

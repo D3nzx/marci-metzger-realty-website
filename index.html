@@ -183,8 +183,8 @@
               <input type="text" name="maxPrice" inputmode="decimal" autocomplete="off" placeholder="$1,000,000" />
             </label>
             <button class="btn btn--primary search-widget__submit" type="submit">SEARCH NOW</button>
+            <p class="form-feedback" id="search-feedback" role="status" aria-live="polite"></p>
           </form>
-          <p class="form-feedback" id="search-feedback" role="status" aria-live="polite"></p>
         </div>
       </section>
 
@@ -236,7 +236,7 @@
             </article>
           </div>
           <div class="gallery-indicators" id="gallery-indicators" role="group" aria-label="Gallery slides"></div>
-          <p class="listings__empty" id="listings-empty" hidden>No sample listings match those filters. Try changing your search.</p>
+          <p class="listings__empty" id="listings-empty" hidden>No matching properties found. Try modifying your filter criteria.</p>
         </div>
       </section>
 
@@ -327,15 +327,15 @@
           <form class="contact-form" id="contact-form" novalidate>
             <h3>Send Message</h3>
             <label>
-              Name <span class="required-mark">(required)</span>
+              Name
               <input type="text" name="name" autocomplete="name" required />
             </label>
             <label>
-              Email <span class="required-mark">(required)</span>
+              Email
               <input type="email" name="email" autocomplete="email" required />
             </label>
             <label>
-              Message <span class="required-mark">(required)</span>
+              Message
               <textarea name="message" rows="4" required></textarea>
             </label>
             <button class="btn btn--primary" type="submit">SEND MESSAGE</button>
