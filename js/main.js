@@ -9,12 +9,11 @@
   const galleryIndicators = document.getElementById("gallery-indicators");
   const galleryLightbox = document.getElementById("gallery-lightbox");
   const galleryLightboxImage = document.getElementById("gallery-lightbox-image");
-  const galleryLightboxCaption = document.getElementById("gallery-lightbox-caption");
-  const galleryLightboxCounter = document.getElementById("gallery-lightbox-counter");
   const galleryLightboxClose = document.getElementById("gallery-lightbox-close");
   const galleryLightboxPrevious = document.getElementById("gallery-lightbox-prev");
   const galleryLightboxNext = document.getElementById("gallery-lightbox-next");
   const listingsEmpty = document.getElementById("listings-empty");
+  const listingsReset = document.getElementById("listings-reset");
   const contactForm = document.getElementById("contact-form");
   const messageModal = document.getElementById("message-modal");
   const messageModalClose = document.getElementById("message-modal-close");
@@ -223,29 +222,6 @@
   let suppressGalleryClick = false;
 
   if (listingsGrid) {
-    if ("IntersectionObserver" in window) {
-      listingsGrid.classList.add("is-caption-aware");
-      const captionObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          entry.target.classList.toggle(
-            "is-caption-visible",
-            entry.isIntersecting && entry.intersectionRatio >= 0.8
-          );
-        });
-      }, {
-        root: listingsGrid,
-        threshold: [0, 0.8, 1]
-      });
-
-      listingCards.forEach(function (card) {
-        captionObserver.observe(card);
-      });
-    } else {
-      listingCards.forEach(function (card) {
-        card.classList.add("is-caption-visible");
-      });
-    }
-
     listingsGrid.addEventListener("scroll", function () {
       window.requestAnimationFrame(updateGalleryIndicators);
     }, { passive: true });
@@ -315,14 +291,9 @@
     if (!card || !galleryLightboxImage) return;
 
     const sourceImage = card.querySelector("img");
-    const caption = Array.from(card.querySelectorAll(".listing-card__title, .listing-card__description"))
-      .map(function (item) { return item.textContent.trim(); })
-      .join(" · ");
 
     galleryLightboxImage.src = sourceImage.dataset.full || sourceImage.currentSrc || sourceImage.src;
     galleryLightboxImage.alt = sourceImage.alt;
-    galleryLightboxCaption.textContent = caption;
-    galleryLightboxCounter.textContent = (currentGalleryIndex + 1) + " / " + visibleGalleryCards.length;
     galleryLightboxPrevious.disabled = visibleGalleryCards.length < 2;
     galleryLightboxNext.disabled = visibleGalleryCards.length < 2;
   }
@@ -537,6 +508,13 @@
       listingsEmpty.hidden = resultCount > 0;
       document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
     });
+
+    if (listingsReset) {
+      listingsReset.addEventListener("click", function () {
+        searchForm.reset();
+        searchForm.requestSubmit();
+      });
+    }
   }
 
   if (contactForm && messageModal) {

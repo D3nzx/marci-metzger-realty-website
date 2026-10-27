@@ -201,48 +201,44 @@
             <article class="listing-card" data-location="pahrump" data-type="residential" data-price="425000" data-beds="3" data-baths="2" data-date="2026-04-15">
               <button class="gallery-card__trigger" type="button" aria-label="View photo: Pahrump community with pool and golf course">
                 <img src="assets/images/properties/gallery-01.png" alt="Aerial view of a Pahrump community with a pool, golf course, and mountain backdrop" loading="lazy" decoding="async" draggable="false" />
-                <span class="listing-card__meta"><span class="listing-card__title">Sample home in Pahrump</span><span class="listing-card__description">$425,000 · 3 bd · 2 ba</span></span>
               </button>
             </article>
             <article class="listing-card" data-location="pahrump" data-type="luxury" data-price="1250000" data-beds="4" data-baths="3" data-date="2026-03-22">
               <button class="gallery-card__trigger" type="button" aria-label="View photo: Living room overlooking a desert garden">
                 <img src="assets/images/properties/gallery-02.png" alt="Living room with a red leather chair and large windows overlooking a desert garden" loading="lazy" decoding="async" draggable="false" />
-                <span class="listing-card__meta"><span class="listing-card__title">Sample estate in Pahrump</span><span class="listing-card__description">$1,250,000 · 4 bd · 3 ba</span></span>
               </button>
             </article>
             <article class="listing-card" data-location="summerlin" data-type="luxury" data-price="1500000" data-beds="4" data-baths="4" data-date="2025-12-05">
               <button class="gallery-card__trigger" type="button" aria-label="View photo: Community tennis courts and clubhouse">
                 <img src="assets/images/properties/gallery-05.png" alt="Community tennis courts and clubhouse framed by desert mountains" loading="lazy" decoding="async" draggable="false" />
-                <span class="listing-card__meta"><span class="listing-card__title">Sample estate in Summerlin</span><span class="listing-card__description">$1,500,000 · 4 bd · 4 ba</span></span>
               </button>
             </article>
             <article class="listing-card" data-location="north-las-vegas" data-type="commercial" data-price="800000" data-beds="0" data-baths="0" data-date="2025-11-12">
               <button class="gallery-card__trigger" type="button" aria-label="View photo: Neighborhood beside a golf course and pond">
                 <img src="assets/images/properties/gallery-06.png" alt="Aerial view of a residential neighborhood beside a golf course and pond" loading="lazy" decoding="async" draggable="false" />
-                <span class="listing-card__meta"><span class="listing-card__title">Sample commercial property in North Las Vegas</span><span class="listing-card__description">$800,000 · Commercial</span></span>
               </button>
             </article>
             <article class="listing-card" data-location="pahrump" data-type="land" data-price="250000" data-beds="0" data-baths="0" data-date="2025-10-01">
               <button class="gallery-card__trigger" type="button" aria-label="View photo: Tennis courts and recreation clubhouse">
                 <img src="assets/images/properties/gallery-07.png" alt="Tennis courts and recreation clubhouse in a Pahrump community" loading="lazy" decoding="async" draggable="false" />
-                <span class="listing-card__meta"><span class="listing-card__title">Sample land in Pahrump</span><span class="listing-card__description">$250,000 · Land</span></span>
               </button>
             </article>
             <article class="listing-card" data-location="henderson" data-type="residential" data-price="620000" data-beds="4" data-baths="3" data-date="2026-01-18">
               <button class="gallery-card__trigger" type="button" aria-label="View photo: Desert home with a pool and mountain views">
                 <img src="assets/images/properties/gallery-04.png" alt="Desert home with a backyard pool and mountain views" loading="lazy" decoding="async" draggable="false" />
-                <span class="listing-card__meta"><span class="listing-card__title">Sample home in Henderson</span><span class="listing-card__description">$620,000 · 4 bd · 3 ba</span></span>
               </button>
             </article>
           </div>
           <div class="gallery-indicators" id="gallery-indicators" role="group" aria-label="Gallery slides"></div>
-          <p class="listings__empty" id="listings-empty" hidden>No matching properties found. Try modifying your filter criteria.</p>
+          <div class="listings__empty" id="listings-empty" role="status" aria-live="polite" hidden>
+            <p>No matching properties found. Try adjusting your search criteria.</p>
+            <button class="listings__reset" id="listings-reset" type="button">Reset Filters</button>
+          </div>
         </div>
       </section>
 
       <dialog class="gallery-lightbox" id="gallery-lightbox" aria-label="Photo viewer">
         <div class="gallery-lightbox__header">
-          <p class="gallery-lightbox__counter" id="gallery-lightbox-counter"></p>
           <button class="gallery-lightbox__close" id="gallery-lightbox-close" type="button" aria-label="Close photo viewer">&times;</button>
         </div>
         <div class="gallery-lightbox__stage">
@@ -254,7 +250,6 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
           </button>
         </div>
-        <p class="gallery-lightbox__caption" id="gallery-lightbox-caption"></p>
       </dialog>
 
       <section class="about" id="about">
