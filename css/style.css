@@ -471,6 +471,15 @@ textarea {
   background: var(--light-bg);
 }
 
+.listings-subtitle {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: -0.5rem 0 2.2rem;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+}
+
 .listings__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

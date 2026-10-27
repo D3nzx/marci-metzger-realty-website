@@ -86,6 +86,7 @@
       const maxPrice = Number(data.get("maxPrice") || 0);
       const beds = Number(data.get("beds") || 0);
       const baths = Number(data.get("baths") || 0);
+      const hasFilters = Boolean(location || type || minPrice || maxPrice || beds || baths);
 
       if (minPrice && maxPrice && minPrice > maxPrice) {
         searchFeedback.textContent = "Minimum price cannot exceed maximum price.";
@@ -121,10 +122,11 @@
       });
 
       const resultCount = matchingCards.length;
-      searchFeedback.textContent =
-        "Showing " + resultCount + " illustrative sample " +
-        (resultCount === 1 ? "listing" : "listings") +
-        ". This is not live availability.";
+      searchFeedback.textContent = hasFilters
+        ? "Showing " + resultCount + " illustrative sample " +
+          (resultCount === 1 ? "listing" : "listings") +
+          ". This is not live availability."
+        : "";
       listingsEmpty.hidden = resultCount > 0;
       document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -138,8 +140,7 @@
         listingsGrid.appendChild(card);
       });
       listingsEmpty.hidden = true;
-      searchFeedback.textContent =
-        "Showing all " + listingCards.length + " illustrative sample listings. This is not live availability.";
+      searchFeedback.textContent = "";
       document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
