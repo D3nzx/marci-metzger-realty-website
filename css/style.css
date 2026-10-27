@@ -125,6 +125,16 @@ p {
   margin-bottom: 0.75rem;
 }
 
+.hero__actions .btn--primary[href="#move"],
+.pillars__heading > .eyebrow,
+.search .section-inner > .eyebrow,
+.listings__header .eyebrow,
+.about__copy > .eyebrow,
+.office-card > p.eyebrow {
+  color: #121212;
+  -webkit-font-smoothing: antialiased;
+}
+
 .section-intro {
   max-width: 42rem;
   color: var(--muted);
