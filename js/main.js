@@ -6,6 +6,7 @@
   const listingsGrid = document.querySelector(".listings__grid");
   const listingCards = Array.from(document.querySelectorAll(".listing-card"));
   const listingsEmpty = document.getElementById("listings-empty");
+  const viewAllListings = document.getElementById("view-all-listings");
   const contactForm = document.getElementById("contact-form");
   const contactFeedback = document.getElementById("contact-feedback");
   const cookieNotice = document.getElementById("cookie-notice");
@@ -125,6 +126,20 @@
         (resultCount === 1 ? "listing" : "listings") +
         ". This is not live availability.";
       listingsEmpty.hidden = resultCount > 0;
+      document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  if (viewAllListings && searchForm && searchFeedback && listingsGrid && listingsEmpty) {
+    viewAllListings.addEventListener("click", function () {
+      searchForm.reset();
+      listingCards.forEach(function (card) {
+        card.hidden = false;
+        listingsGrid.appendChild(card);
+      });
+      listingsEmpty.hidden = true;
+      searchFeedback.textContent =
+        "Showing all " + listingCards.length + " illustrative sample listings. This is not live availability.";
       document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }

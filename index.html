@@ -124,8 +124,8 @@
           <form class="search-widget" id="listing-search" novalidate>
             <label>
               Location
-              <select name="location" required>
-                <option value="">Select an area</option>
+              <select name="location">
+                <option value="">Any area</option>
                 <option value="pahrump">Pahrump</option>
                 <option value="las-vegas">Las Vegas</option>
                 <option value="henderson">Henderson</option>
@@ -212,14 +212,6 @@
               <img src="assets/images/properties/gallery-02.png" alt="Living room with a red leather chair and large windows overlooking a desert garden" loading="lazy" decoding="async" />
               <div class="listing-card__meta"><h3>Sample estate in Pahrump</h3><p>$1,250,000 · 4 bd · 3 ba</p></div>
             </article>
-            <article class="listing-card" data-location="las-vegas" data-type="condo" data-price="385000" data-beds="2" data-baths="2" data-date="2026-02-10">
-              <img src="assets/images/properties/gallery-03.png" alt="Aerial view of homes with the mountains of Pahrump in the distance" loading="lazy" decoding="async" />
-              <div class="listing-card__meta"><h3>Sample townhome in Las Vegas</h3><p>$385,000 · 2 bd · 2 ba</p></div>
-            </article>
-            <article class="listing-card" data-location="henderson" data-type="residential" data-price="620000" data-beds="4" data-baths="3" data-date="2026-01-18">
-              <img src="assets/images/properties/gallery-04.png" alt="Desert home with a backyard pool and mountain views" loading="lazy" decoding="async" />
-              <div class="listing-card__meta"><h3>Sample home in Henderson</h3><p>$620,000 · 4 bd · 3 ba</p></div>
-            </article>
             <article class="listing-card" data-location="summerlin" data-type="luxury" data-price="1500000" data-beds="4" data-baths="4" data-date="2025-12-05">
               <img src="assets/images/properties/gallery-05.png" alt="Community tennis courts and clubhouse framed by desert mountains" loading="lazy" decoding="async" />
               <div class="listing-card__meta"><h3>Sample estate in Summerlin</h3><p>$1,500,000 · 4 bd · 4 ba</p></div>
@@ -232,6 +224,13 @@
               <img src="assets/images/properties/gallery-07.png" alt="Tennis courts and recreation clubhouse in a Pahrump community" loading="lazy" decoding="async" />
               <div class="listing-card__meta"><h3>Sample land in Pahrump</h3><p>$250,000 · Land</p></div>
             </article>
+            <article class="listing-card" data-location="henderson" data-type="residential" data-price="620000" data-beds="4" data-baths="3" data-date="2026-01-18">
+              <img src="assets/images/properties/gallery-04.png" alt="Desert home with a backyard pool and mountain views" loading="lazy" decoding="async" />
+              <div class="listing-card__meta"><h3>Sample home in Henderson</h3><p>$620,000 · 4 bd · 3 ba</p></div>
+            </article>
+          </div>
+          <div class="listings__cta">
+            <button class="btn btn--gold" id="view-all-listings" type="button">VIEW ALL LISTINGS</button>
           </div>
           <p class="listings__empty" id="listings-empty" hidden>No sample listings match those filters. Try changing your search.</p>
         </div>
