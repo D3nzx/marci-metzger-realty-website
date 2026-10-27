@@ -18,6 +18,46 @@
     yearEl.textContent = String(new Date().getFullYear());
   }
 
+  const officeStatus = document.getElementById("live-office-status");
+
+  function updateOfficeStatus() {
+    if (!officeStatus) return;
+
+    const timeParts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Los_Angeles",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    }).formatToParts(new Date());
+    const currentHour = Number(timeParts.find(function (part) {
+      return part.type === "hour";
+    }).value);
+    const isOpen = currentHour >= 8 && currentHour < 19;
+    const nextStatus = isOpen ? "open" : "closed";
+
+    if (officeStatus.dataset.status === nextStatus) return;
+
+    const badge = document.createElement("span");
+    badge.className = "status-badge status-badge--" + nextStatus;
+
+    if (isOpen) {
+      const pulseDot = document.createElement("span");
+      pulseDot.className = "pulse-dot";
+      pulseDot.setAttribute("aria-hidden", "true");
+      badge.append(pulseDot, document.createTextNode("Open Now · Closes at 7:00 PM"));
+    } else {
+      badge.textContent = "Closed Now · Opens tomorrow at 8:00 AM";
+    }
+
+    officeStatus.dataset.status = nextStatus;
+    officeStatus.replaceChildren(badge);
+  }
+
+  if (officeStatus) {
+    updateOfficeStatus();
+    window.setInterval(updateOfficeStatus, 60_000);
+  }
+
   if (cookieNotice && cookieAccept) {
     let preferenceSaved = false;
 

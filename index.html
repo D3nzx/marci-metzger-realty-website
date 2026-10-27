@@ -276,31 +276,33 @@
 
       <section class="contact" id="contact">
         <div class="section-inner contact__layout">
-          <div>
+          <section class="office-card" aria-labelledby="office-heading">
             <p class="eyebrow">Call or Visit</p>
-            <h2>Marci Metzger - THE RIDGE REALTY GROUP</h2>
+            <h2 id="office-heading">Marci Metzger - The Ridge Realty Group</h2>
+            <div class="office-status" id="live-office-status" role="status" aria-live="polite" aria-atomic="true"></div>
             <address class="contact__details">
-              <p>
-                3190 HW-160, Suite F, Pahrump, Nevada 89048, United States<br />
+              <div class="office-info-group">
+                <span class="office-info-label">Office Address</span>
+                <p class="office-address">3190 HW-160, Suite F, Pahrump, Nevada 89048, United States</p>
                 <a
-                  class="directions-link"
+                  class="btn btn--outline directions-link"
                   href="https://www.google.com/maps/search/?api=1&amp;query=3190+HW-160+Suite+F+Pahrump+NV+89048"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  GET DIRECTIONS
+                  Get Directions
                 </a>
-              </p>
-              <p>
-                <a href="tel:2069196886">(206) 919-6886</a>
-              </p>
-              <h3>Office Hours</h3>
-              <p>Open today</p>
-              <p>08:00 am – 07:00 pm</p>
-              <p>Open daily&nbsp;&nbsp; 8:00 am - 7:00 pm</p>
-              <p>Appointments outside office hours available upon request. Just call!</p>
+              </div>
+              <a class="btn btn--gold contact-phone" href="tel:2069196886">Call (206) 919-6886</a>
             </address>
-          </div>
+            <div class="office-hours">
+              <h3>Office Hours</h3>
+              <ul>
+                <li><span>Open Daily</span><strong>8:00 AM - 7:00 PM</strong></li>
+                <li class="office-hours__note">Appointments outside office hours are available upon request. Call to arrange a time.</li>
+              </ul>
+            </div>
+          </section>
 
           <form class="contact-form" id="contact-form" novalidate>
             <h3>Send Message</h3>
