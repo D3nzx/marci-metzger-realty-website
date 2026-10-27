@@ -373,7 +373,7 @@ p {
 }
 
 .pillars__heading {
-  padding: clamp(1.75rem, 4vw, 2.5rem) clamp(2.5rem, 6vw, 5.5rem) 0.6rem;
+  padding: clamp(1.75rem, 4vw, 2.5rem) 0 0.6rem;
 }
 
 .pillars__heading .eyebrow {
@@ -898,12 +898,12 @@ textarea {
   }
 
   .pillars__heading {
-    padding: 1.75rem 1.2rem 0.55rem;
+    padding: 1.75rem 0 0.55rem;
   }
 
   .about__portrait img {
     height: auto;
-    max-height: 480px;
+    max-height: 280px;
     aspect-ratio: 4 / 3;
   }
 
