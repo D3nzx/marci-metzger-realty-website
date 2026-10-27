@@ -3,6 +3,9 @@
   const primaryNav = document.querySelector(".primary-nav");
   const searchForm = document.getElementById("listing-search");
   const searchFeedback = document.getElementById("search-feedback");
+  const listingsGrid = document.querySelector(".listings__grid");
+  const listingCards = Array.from(document.querySelectorAll(".listing-card"));
+  const listingsEmpty = document.getElementById("listings-empty");
   const contactForm = document.getElementById("contact-form");
   const contactFeedback = document.getElementById("contact-feedback");
   const cookieNotice = document.getElementById("cookie-notice");
@@ -76,67 +79,95 @@
     searchForm.addEventListener("submit", function (event) {
       event.preventDefault();
       const data = new FormData(searchForm);
-      const location = data.get("location");
-      const maxPrice = Number(data.get("maxPrice") || 0);
+      const location = String(data.get("location") || "");
+      const type = String(data.get("type") || "");
       const minPrice = Number(data.get("minPrice") || 0);
-
-      if (!location) {
-        searchFeedback.textContent = "Please choose a location to begin your search.";
-        return;
-      }
+      const maxPrice = Number(data.get("maxPrice") || 0);
+      const beds = Number(data.get("beds") || 0);
+      const baths = Number(data.get("baths") || 0);
 
       if (minPrice && maxPrice && minPrice > maxPrice) {
         searchFeedback.textContent = "Minimum price cannot exceed maximum price.";
         return;
       }
 
-      const type = data.get("type") || "any type";
-      const sortOptions = {
-        newest: "newest",
-        oldest: "oldest",
-        "price-ascending": "price, low to high",
-        "price-descending": "price, high to low"
-      };
-      const sortBy = sortOptions[data.get("sortBy")] || "newest";
-      const locationLabel = String(location)
-        .replace(/-/g, " ")
-        .replace(/\b\w/g, function (char) {
-          return char.toUpperCase();
-        });
+      const matchingCards = listingCards.filter(function (card) {
+        const price = Number(card.dataset.price);
+        return (!location || card.dataset.location === location) &&
+          (!type || card.dataset.type === type) &&
+          (!minPrice || price >= minPrice) &&
+          (!maxPrice || price <= maxPrice) &&
+          Number(card.dataset.beds) >= beds &&
+          Number(card.dataset.baths) >= baths;
+      });
+
+      const sortBy = String(data.get("sortBy") || "newest");
+      matchingCards.sort(function (first, second) {
+        if (sortBy === "oldest") return first.dataset.date.localeCompare(second.dataset.date);
+        if (sortBy === "price-ascending") return Number(first.dataset.price) - Number(second.dataset.price);
+        if (sortBy === "price-descending") return Number(second.dataset.price) - Number(first.dataset.price);
+        return second.dataset.date.localeCompare(first.dataset.date);
+      });
+
+      matchingCards.forEach(function (card) {
+        card.hidden = false;
+        listingsGrid.appendChild(card);
+      });
+      listingCards.filter(function (card) {
+        return !matchingCards.includes(card);
+      }).forEach(function (card) {
+        card.hidden = true;
+      });
+
+      const resultCount = matchingCards.length;
       searchFeedback.textContent =
-        "Demo search ready for " +
-        locationLabel +
-        " (" +
-        type +
-        "), sorted by " +
-        sortBy +
-        ". Live listing results are not connected in this preview.";
-      searchForm.reset();
+        "Showing " + resultCount + " illustrative sample " +
+        (resultCount === 1 ? "listing" : "listings") +
+        ". This is not live availability.";
+      listingsEmpty.hidden = resultCount > 0;
+      document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 
   if (contactForm && contactFeedback) {
+    const nameInput = contactForm.elements.namedItem("name");
+    const emailInput = contactForm.elements.namedItem("email");
+    const messageInput = contactForm.elements.namedItem("message");
+
     contactForm.addEventListener("submit", function (event) {
       event.preventDefault();
       const data = new FormData(contactForm);
       const name = String(data.get("name") || "").trim();
       const email = String(data.get("email") || "").trim();
+      const message = String(data.get("message") || "").trim();
 
-      if (!name || !email) {
-        contactFeedback.textContent = "Please complete name and email.";
+      [nameInput, emailInput, messageInput].forEach(function (input) {
+        input.removeAttribute("aria-invalid");
+      });
+
+      if (!name) {
+        nameInput.setAttribute("aria-invalid", "true");
+        contactFeedback.textContent = "Please enter your name.";
+        nameInput.focus();
         return;
       }
 
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        contactFeedback.textContent = "Please enter a valid email address.";
+        emailInput.setAttribute("aria-invalid", "true");
+        contactFeedback.textContent = email ? "Please enter a valid email address." : "Please enter your email address.";
+        emailInput.focus();
+        return;
+      }
+
+      if (!message) {
+        messageInput.setAttribute("aria-invalid", "true");
+        contactFeedback.textContent = "Please enter a message.";
+        messageInput.focus();
         return;
       }
 
       contactFeedback.textContent =
-        "Demo form validated for " +
-        name +
-        ". This preview does not send email. Please call (206) 919-6886 to contact the office.";
-      contactForm.reset();
+        "Thanks, " + name + ". Your message has not been sent because this preview has no messaging service. Please call (206) 919-6886.";
     });
   }
 })();

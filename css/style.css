@@ -51,6 +51,11 @@ a {
   text-decoration: none;
 }
 
+:focus-visible {
+  outline: 3px solid var(--accent-gold-deep);
+  outline-offset: 3px;
+}
+
 h1,
 h2,
 h3 {
@@ -393,6 +398,12 @@ p {
   background: var(--cream);
 }
 
+.search__note,
+.contact-form__note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .search-widget {
   display: grid;
   min-width: 0;
@@ -434,6 +445,22 @@ textarea {
   font-weight: 400;
 }
 
+textarea {
+  resize: vertical;
+}
+
+.contact-form__note a {
+  color: var(--accent-gold);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.required-mark {
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .search-widget__submit {
   grid-column: 1 / -1;
   justify-self: start;
@@ -457,6 +484,10 @@ textarea {
   border-radius: 14px;
   min-height: 280px;
   box-shadow: var(--shadow);
+}
+
+.listing-card[hidden] {
+  display: none;
 }
 
 .listing-card img {
@@ -489,6 +520,17 @@ textarea {
   margin: 0.2rem 0 0;
   color: var(--accent-gold);
   font-size: 0.85rem;
+}
+
+.listings__empty {
+  margin-top: 1.5rem;
+  padding: 1.2rem;
+  border-left: 3px solid var(--accent-gold-deep);
+  background: var(--cream);
+}
+
+.listings__empty[hidden] {
+  display: none;
 }
 
 .about {
