@@ -571,7 +571,7 @@ textarea {
 
 .listings__grid {
   display: flex;
-  gap: 1.15rem;
+  gap: 24px;
   margin-top: 1.75rem;
   padding: 0 0 0.75rem;
   cursor: grab;
@@ -579,6 +579,7 @@ textarea {
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: 1px;
+  scroll-behavior: smooth;
   scrollbar-width: none;
 }
 
@@ -638,8 +639,9 @@ textarea {
 
 .listing-card {
   position: relative;
-  flex: 0 0 calc(44% - 16px);
-  min-width: 0;
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
   height: auto;
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -684,6 +686,16 @@ textarea {
   gap: 0.2rem;
   padding: 0.8rem 0.15rem 0.25rem;
   color: var(--text);
+  transition: opacity 0.2s ease;
+}
+
+.listings__grid.is-caption-aware .listing-card__meta {
+  opacity: 0;
+}
+
+.listing-card.is-caption-visible .listing-card__meta,
+.gallery-card__trigger:focus-visible .listing-card__meta {
+  opacity: 1;
 }
 
 .listing-card__title {
@@ -1460,12 +1472,30 @@ textarea {
     margin-top: 1.25rem;
   }
 
-  .listing-card {
-    flex-basis: 82%;
-  }
-
   .listing-card img {
     height: 240px;
+  }
+}
+
+@media (max-width: 767px) {
+  .listing-card {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    scroll-snap-align: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .listings__grid {
+    gap: 24px;
+  }
+
+  .listing-card {
+    flex: 0 0 calc(50% - 12px);
+    width: calc(50% - 12px);
+    min-width: calc(50% - 12px);
+    scroll-snap-align: start;
   }
 }
 

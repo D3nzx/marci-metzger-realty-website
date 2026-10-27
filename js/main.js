@@ -182,6 +182,29 @@
   let suppressGalleryClick = false;
 
   if (listingsGrid) {
+    if ("IntersectionObserver" in window) {
+      listingsGrid.classList.add("is-caption-aware");
+      const captionObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          entry.target.classList.toggle(
+            "is-caption-visible",
+            entry.isIntersecting && entry.intersectionRatio >= 0.8
+          );
+        });
+      }, {
+        root: listingsGrid,
+        threshold: [0, 0.8, 1]
+      });
+
+      listingCards.forEach(function (card) {
+        captionObserver.observe(card);
+      });
+    } else {
+      listingCards.forEach(function (card) {
+        card.classList.add("is-caption-visible");
+      });
+    }
+
     listingsGrid.addEventListener("scroll", function () {
       window.requestAnimationFrame(updateGalleryIndicators);
     }, { passive: true });
