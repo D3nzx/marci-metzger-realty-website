@@ -478,6 +478,13 @@ textarea {
   font-weight: 400;
 }
 
+.search-widget select {
+  height: 40px;
+  min-height: 40px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+}
+
 .contact-form input,
 .contact-form textarea {
   min-height: 48px;
@@ -507,9 +514,10 @@ textarea {
 }
 
 .search-widget__submit {
-  grid-column: 1 / -1;
-  justify-self: start;
-  margin-top: 0.4rem;
+  grid-column: span 2;
+  justify-self: stretch;
+  align-self: end;
+  margin-top: 0;
 }
 
 .listings {
@@ -1025,6 +1033,10 @@ textarea {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .search-widget__submit {
+    grid-column: auto;
+  }
+
   .about__layout,
   .contact__layout {
     grid-template-columns: 1fr;
@@ -1042,8 +1054,7 @@ textarea {
 
 @media (max-width: 768px) {
   .pillars__grid,
-  .stats__grid,
-  .search-widget {
+  .stats__grid {
     grid-template-columns: 1fr;
   }
 
@@ -1070,7 +1081,25 @@ textarea {
   }
 
   .search-widget {
-    padding: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .search-widget label {
+    gap: 0.3rem;
+  }
+
+  .search-widget select {
+    height: 38px;
+    min-height: 38px;
+    padding: 0.35rem 0.55rem;
+  }
+
+  .search-widget__submit {
+    grid-column: span 2;
+    justify-self: stretch;
+    min-height: 48px;
   }
 
   .pillar-card {
@@ -1205,6 +1234,16 @@ textarea {
 
   .listing-card {
     height: 240px;
+  }
+}
+
+@media (min-width: 769px) {
+  .search-widget {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .search-widget__submit {
+    grid-column: auto;
   }
 }
 
