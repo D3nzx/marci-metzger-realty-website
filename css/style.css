@@ -567,7 +567,7 @@ textarea {
 }
 
 .contact-form__note a {
-  color: var(--accent-gold-deep);
+  color: var(--text);
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
