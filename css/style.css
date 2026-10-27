@@ -6,6 +6,10 @@
   --muted: #6f675c;
   --accent-gold: #c4a574;
   --accent-gold-deep: #a07c45;
+  --action-blue: #1e3a8a;
+  --action-blue-hover: #172e6b;
+  --action-green: #047857;
+  --action-green-hover: #065f46;
   --text: #1f1b16;
   --white: #ffffff;
   --overlay: rgba(10, 9, 8, 0.58);
@@ -146,14 +150,34 @@ p {
   transform: translateY(-2px);
 }
 
-.btn--gold {
-  background: linear-gradient(180deg, #d8bc8e, var(--accent-gold));
-  color: var(--dark-bg);
-  box-shadow: 0 10px 24px rgba(160, 124, 69, 0.28);
+.btn--primary {
+  background-color: var(--action-blue);
+  color: var(--white);
+  box-shadow: 0 8px 20px rgba(30, 58, 138, 0.2);
 }
 
-.btn--gold:hover {
-  background: linear-gradient(180deg, #e4cdab, var(--accent-gold-deep));
+.btn--primary:hover {
+  background-color: var(--action-blue-hover);
+  box-shadow: 0 10px 24px rgba(30, 58, 138, 0.28);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+}
+
+.btn--contact {
+  background-color: var(--action-green);
+  color: var(--white);
+  box-shadow: 0 8px 20px rgba(4, 120, 87, 0.18);
+}
+
+.btn--contact:hover {
+  background-color: var(--action-green-hover);
+  box-shadow: 0 10px 24px rgba(4, 120, 87, 0.26);
+}
+
+.btn--contact:active {
+  transform: translateY(0);
 }
 
 .btn--ghost {
@@ -164,6 +188,18 @@ p {
 
 .btn--ghost:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+.btn--outline-light {
+  border-color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+}
+
+.btn--outline-light:hover {
+  border-color: var(--white);
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--white);
 }
 
 .site-header {
@@ -270,18 +306,20 @@ p {
   font-weight: 600;
   text-decoration: none;
   border-radius: 50px;
-  background-color: var(--gold, #cbb27a);
+  background-color: rgba(255, 255, 255, 0.06);
   background-image: none;
   color: #fff;
+  border-color: rgba(255, 255, 255, 0.65);
   transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   will-change: transform;
   backface-visibility: hidden;
 }
 
 .header-call:hover {
-  background-color: #b89d62;
+  background-color: rgba(255, 255, 255, 0.16);
   background-image: none;
   color: #fff;
+  border-color: #ffffff;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -965,13 +1003,15 @@ textarea {
 }
 
 .btn--outline {
-  border-color: var(--accent-gold-deep);
+  border-color: var(--action-green);
   background: transparent;
-  color: var(--text);
+  color: var(--action-green);
 }
 
 .btn--outline:hover {
-  background: rgba(196, 165, 116, 0.14);
+  border-color: var(--action-green-hover);
+  background: rgba(4, 120, 87, 0.08);
+  color: var(--action-green-hover);
 }
 
 .directions-link {
