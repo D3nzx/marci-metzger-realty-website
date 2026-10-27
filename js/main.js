@@ -3,8 +3,16 @@
   const primaryNav = document.querySelector(".primary-nav");
   const searchForm = document.getElementById("listing-search");
   const searchFeedback = document.getElementById("search-feedback");
-  const listingsGrid = document.querySelector(".listings__grid");
+  const listingsGrid = document.getElementById("carouselTrack");
   const listingCards = Array.from(document.querySelectorAll(".listing-card"));
+  const galleryIndicators = document.getElementById("gallery-indicators");
+  const galleryLightbox = document.getElementById("gallery-lightbox");
+  const galleryLightboxImage = document.getElementById("gallery-lightbox-image");
+  const galleryLightboxCaption = document.getElementById("gallery-lightbox-caption");
+  const galleryLightboxCounter = document.getElementById("gallery-lightbox-counter");
+  const galleryLightboxClose = document.getElementById("gallery-lightbox-close");
+  const galleryLightboxPrevious = document.getElementById("gallery-lightbox-prev");
+  const galleryLightboxNext = document.getElementById("gallery-lightbox-next");
   const listingsEmpty = document.getElementById("listings-empty");
   const viewAllListings = document.getElementById("view-all-listings");
   const contactForm = document.getElementById("contact-form");
@@ -116,6 +124,226 @@
     });
   });
 
+  function getVisibleGalleryCards() {
+    return listingsGrid
+      ? Array.from(listingsGrid.querySelectorAll(".listing-card:not([hidden])"))
+      : [];
+  }
+
+  function getGalleryPageSize(cards) {
+    if (!listingsGrid || !cards.length) return 1;
+    const cardWidth = cards[0].getBoundingClientRect().width;
+    const gap = Number.parseFloat(window.getComputedStyle(listingsGrid).gap) || 0;
+    return Math.max(1, Math.round(listingsGrid.clientWidth / (cardWidth + gap)));
+  }
+
+  function updateGalleryIndicators() {
+    if (!listingsGrid || !galleryIndicators) return;
+
+    const cards = getVisibleGalleryCards();
+    const pageSize = getGalleryPageSize(cards);
+    const pageCount = Math.ceil(cards.length / pageSize);
+
+    if (galleryIndicators.children.length !== pageCount) {
+      galleryIndicators.replaceChildren();
+      for (let pageIndex = 0; pageIndex < pageCount; pageIndex += 1) {
+        const indicator = document.createElement("button");
+        indicator.className = "gallery-indicator";
+        indicator.type = "button";
+        indicator.dataset.page = String(pageIndex);
+        indicator.setAttribute("aria-label", "Go to gallery page " + (pageIndex + 1));
+        galleryIndicators.appendChild(indicator);
+      }
+    }
+
+    const firstCard = cards[0];
+    const stride = firstCard
+      ? firstCard.getBoundingClientRect().width + (Number.parseFloat(window.getComputedStyle(listingsGrid).gap) || 0)
+      : 1;
+    const activePage = Math.min(pageCount - 1, Math.round(listingsGrid.scrollLeft / (stride * pageSize)));
+
+    Array.from(galleryIndicators.children).forEach(function (indicator, index) {
+      indicator.setAttribute("aria-current", String(index === activePage));
+    });
+  }
+
+  function goToGalleryPage(pageIndex) {
+    const cards = getVisibleGalleryCards();
+    const pageSize = getGalleryPageSize(cards);
+    const card = cards[pageIndex * pageSize];
+    if (!card || !listingsGrid) return;
+
+    const trackLeft = listingsGrid.getBoundingClientRect().left;
+    const cardLeft = card.getBoundingClientRect().left - trackLeft + listingsGrid.scrollLeft;
+    listingsGrid.scrollTo({ left: cardLeft, behavior: "smooth" });
+  }
+
+  let galleryDrag = null;
+  let suppressGalleryClick = false;
+
+  if (listingsGrid) {
+    listingsGrid.addEventListener("scroll", function () {
+      window.requestAnimationFrame(updateGalleryIndicators);
+    }, { passive: true });
+
+    listingsGrid.addEventListener("pointerdown", function (event) {
+      if (event.pointerType !== "mouse" || event.button !== 0) return;
+      galleryDrag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startScrollLeft: listingsGrid.scrollLeft,
+        moved: false
+      };
+      listingsGrid.setPointerCapture(event.pointerId);
+    });
+
+    listingsGrid.addEventListener("pointermove", function (event) {
+      if (!galleryDrag || galleryDrag.pointerId !== event.pointerId) return;
+      const deltaX = event.clientX - galleryDrag.startX;
+      if (Math.abs(deltaX) > 5) {
+        galleryDrag.moved = true;
+        listingsGrid.classList.add("is-dragging");
+        event.preventDefault();
+      }
+      if (galleryDrag.moved) listingsGrid.scrollLeft = galleryDrag.startScrollLeft - deltaX;
+    });
+
+    function finishGalleryDrag(event) {
+      if (!galleryDrag || galleryDrag.pointerId !== event.pointerId) return;
+      const didMove = galleryDrag.moved;
+      galleryDrag = null;
+      listingsGrid.classList.remove("is-dragging");
+      if (didMove) {
+        suppressGalleryClick = true;
+        window.setTimeout(function () { suppressGalleryClick = false; }, 0);
+      }
+    }
+
+    listingsGrid.addEventListener("pointerup", finishGalleryDrag);
+    listingsGrid.addEventListener("pointercancel", finishGalleryDrag);
+
+    listingsGrid.addEventListener("click", function (event) {
+      if (suppressGalleryClick) {
+        event.preventDefault();
+        event.stopPropagation();
+        suppressGalleryClick = false;
+        return;
+      }
+      const trigger = event.target.closest(".gallery-card__trigger");
+      const card = trigger && trigger.closest(".listing-card");
+      if (card) openGalleryLightbox(card, trigger);
+    });
+  }
+
+  if (galleryIndicators) {
+    galleryIndicators.addEventListener("click", function (event) {
+      const indicator = event.target.closest(".gallery-indicator");
+      if (indicator) goToGalleryPage(Number(indicator.dataset.page));
+    });
+  }
+
+  let visibleGalleryCards = [];
+  let currentGalleryIndex = 0;
+  let galleryTriggerToRestore = null;
+
+  function renderGalleryLightbox() {
+    const card = visibleGalleryCards[currentGalleryIndex];
+    if (!card || !galleryLightboxImage) return;
+
+    const sourceImage = card.querySelector("img");
+    const caption = Array.from(card.querySelectorAll(".listing-card__title, .listing-card__description"))
+      .map(function (item) { return item.textContent.trim(); })
+      .join(" · ");
+
+    galleryLightboxImage.src = sourceImage.dataset.full || sourceImage.currentSrc || sourceImage.src;
+    galleryLightboxImage.alt = sourceImage.alt;
+    galleryLightboxCaption.textContent = caption;
+    galleryLightboxCounter.textContent = (currentGalleryIndex + 1) + " / " + visibleGalleryCards.length;
+    galleryLightboxPrevious.disabled = visibleGalleryCards.length < 2;
+    galleryLightboxNext.disabled = visibleGalleryCards.length < 2;
+  }
+
+  function openGalleryLightbox(card, trigger) {
+    if (!galleryLightbox || !galleryLightboxImage) return;
+
+    visibleGalleryCards = Array.from(listingsGrid.querySelectorAll(".listing-card:not([hidden])"));
+    currentGalleryIndex = visibleGalleryCards.indexOf(card);
+    if (currentGalleryIndex < 0) return;
+
+    galleryTriggerToRestore = trigger;
+    renderGalleryLightbox();
+    galleryLightbox.showModal();
+    galleryLightboxClose.focus();
+  }
+
+  function moveLightbox(direction) {
+    if (!visibleGalleryCards.length) return;
+    currentGalleryIndex = (currentGalleryIndex + direction + visibleGalleryCards.length) % visibleGalleryCards.length;
+    renderGalleryLightbox();
+  }
+
+  if (galleryLightbox) {
+    const lightboxStage = galleryLightbox.querySelector(".gallery-lightbox__stage");
+    let lightboxTouchStart = null;
+
+    galleryLightbox.addEventListener("click", function (event) {
+      if (event.target === galleryLightbox) galleryLightbox.close();
+    });
+    galleryLightbox.addEventListener("close", function () {
+      if (galleryTriggerToRestore) galleryTriggerToRestore.focus();
+      galleryTriggerToRestore = null;
+    });
+    document.addEventListener("keydown", function (event) {
+      if (!galleryLightbox.open) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        galleryLightbox.close();
+        return;
+      }
+      if (event.key === "ArrowLeft") moveLightbox(-1);
+      if (event.key === "ArrowRight") moveLightbox(1);
+    });
+
+    if (lightboxStage) {
+      lightboxStage.addEventListener("touchstart", function (event) {
+        const touch = event.changedTouches[0];
+        lightboxTouchStart = { x: touch.clientX, y: touch.clientY };
+      }, { passive: true });
+
+      lightboxStage.addEventListener("touchend", function (event) {
+        if (!lightboxTouchStart) return;
+        const touch = event.changedTouches[0];
+        const deltaX = touch.clientX - lightboxTouchStart.x;
+        const deltaY = touch.clientY - lightboxTouchStart.y;
+        if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
+          moveLightbox(deltaX < 0 ? 1 : -1);
+        }
+        lightboxTouchStart = null;
+      }, { passive: true });
+    }
+  }
+
+  if (galleryLightboxClose) {
+    galleryLightboxClose.addEventListener("click", function () {
+      galleryLightbox.close();
+    });
+  }
+
+  if (galleryLightboxPrevious) {
+    galleryLightboxPrevious.addEventListener("click", function () {
+      moveLightbox(-1);
+    });
+  }
+
+  if (galleryLightboxNext) {
+    galleryLightboxNext.addEventListener("click", function () {
+      moveLightbox(1);
+    });
+  }
+
+  window.addEventListener("resize", updateGalleryIndicators);
+  updateGalleryIndicators();
+
   if (searchForm && searchFeedback) {
     searchForm.addEventListener("submit", function (event) {
       event.preventDefault();
@@ -160,6 +388,8 @@
       }).forEach(function (card) {
         card.hidden = true;
       });
+      listingsGrid.scrollTo({ left: 0, behavior: "smooth" });
+      updateGalleryIndicators();
 
       const resultCount = matchingCards.length;
       searchFeedback.textContent = hasFilters
@@ -179,6 +409,8 @@
         card.hidden = false;
         listingsGrid.appendChild(card);
       });
+      listingsGrid.scrollTo({ left: 0, behavior: "smooth" });
+      updateGalleryIndicators();
       listingsEmpty.hidden = true;
       searchFeedback.textContent = "";
       document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
