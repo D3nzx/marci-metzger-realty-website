@@ -328,22 +328,37 @@
             <h3>Send Message</h3>
             <label>
               Name <span class="required-mark">(required)</span>
-              <input type="text" name="name" autocomplete="name" aria-describedby="contact-feedback" required />
+              <input type="text" name="name" autocomplete="name" required />
             </label>
             <label>
               Email <span class="required-mark">(required)</span>
-              <input type="email" name="email" autocomplete="email" aria-describedby="contact-feedback" required />
+              <input type="email" name="email" autocomplete="email" required />
             </label>
             <label>
               Message <span class="required-mark">(required)</span>
-              <textarea name="message" rows="4" aria-describedby="contact-feedback" required></textarea>
+              <textarea name="message" rows="4" required></textarea>
             </label>
             <button class="btn btn--primary" type="submit">SEND MESSAGE</button>
-            <p class="form-feedback" id="contact-feedback" role="status" aria-live="polite"></p>
             <p class="contact-form__note">This preview does not send messages. Please call <a href="tel:2069196886">(206) 919-6886</a> to contact the office.</p>
           </form>
         </div>
       </section>
+
+      <dialog class="message-modal" id="message-modal" aria-labelledby="message-modal-title" aria-describedby="message-modal-description">
+        <div class="message-modal__content">
+          <span class="message-modal__icon" aria-hidden="true">!</span>
+          <p class="eyebrow">Preview only</p>
+          <h2 id="message-modal-title">Form Complete</h2>
+          <p id="message-modal-description">
+            Thanks for your interest. This website preview does not send messages yet.
+            Please call Marci's team at <a href="tel:2069196886">(206) 919-6886</a> to get in touch.
+          </p>
+          <div class="message-modal__actions">
+            <button class="btn btn--primary" id="message-modal-close" type="button">Close</button>
+            <button class="btn btn--outline" id="message-modal-reset" type="button">Reset form</button>
+          </div>
+        </div>
+      </dialog>
     </main>
 
     <footer class="site-footer">
@@ -386,6 +401,8 @@
         Accept
       </button>
     </aside>
+
+    <div class="validation-toast" id="validation-toast" role="alert" aria-live="assertive" aria-atomic="true" hidden></div>
 
     <script src="js/main.js"></script>
   </body>

@@ -3,6 +3,7 @@
   const primaryNav = document.querySelector(".primary-nav");
   const searchForm = document.getElementById("listing-search");
   const searchFeedback = document.getElementById("search-feedback");
+  const validationToast = document.getElementById("validation-toast");
   const listingsGrid = document.getElementById("carouselTrack");
   const listingCards = Array.from(document.querySelectorAll(".listing-card"));
   const galleryIndicators = document.getElementById("gallery-indicators");
@@ -15,11 +16,52 @@
   const galleryLightboxNext = document.getElementById("gallery-lightbox-next");
   const listingsEmpty = document.getElementById("listings-empty");
   const contactForm = document.getElementById("contact-form");
-  const contactFeedback = document.getElementById("contact-feedback");
+  const messageModal = document.getElementById("message-modal");
+  const messageModalClose = document.getElementById("message-modal-close");
+  const messageModalReset = document.getElementById("message-modal-reset");
   const cookieNotice = document.getElementById("cookie-notice");
   const cookieAccept = document.getElementById("cookie-accept");
   const yearEl = document.getElementById("year");
   const cookiePreferenceKey = "marci-cookie-preference";
+  let toastTimer;
+  let toastTransitionTimer;
+  let activeToastField = null;
+
+  function hideValidationToast() {
+    if (!validationToast || validationToast.hidden) return;
+
+    window.clearTimeout(toastTimer);
+    validationToast.classList.remove("is-visible");
+    activeToastField = null;
+    toastTransitionTimer = window.setTimeout(function () {
+      validationToast.hidden = true;
+    }, 250);
+  }
+
+  function showValidationToast(message, fieldName) {
+    if (!validationToast) return;
+
+    window.clearTimeout(toastTimer);
+    window.clearTimeout(toastTransitionTimer);
+    validationToast.textContent = message;
+    validationToast.hidden = false;
+    validationToast.classList.remove("is-visible");
+    activeToastField = fieldName || null;
+
+    window.requestAnimationFrame(function () {
+      validationToast.classList.add("is-visible");
+    });
+
+    toastTimer = window.setTimeout(hideValidationToast, 5000);
+  }
+
+  function setFieldInvalid(input, invalid) {
+    if (invalid) {
+      input.setAttribute("aria-invalid", "true");
+    } else {
+      input.removeAttribute("aria-invalid");
+    }
+  }
 
   if (yearEl) {
     yearEl.textContent = String(new Date().getFullYear());
@@ -376,6 +418,47 @@
   }
 
   if (searchForm && searchFeedback) {
+    const minPriceInput = searchForm.elements.namedItem("minPrice");
+    const maxPriceInput = searchForm.elements.namedItem("maxPrice");
+    let priceRangeInvalid = false;
+
+    function clearSearchErrors() {
+      setFieldInvalid(minPriceInput, false);
+      setFieldInvalid(maxPriceInput, false);
+      priceRangeInvalid = false;
+    }
+
+    function clearSearchPriceError(event) {
+      if (event.target.name === "minPrice") {
+        setFieldInvalid(minPriceInput, false);
+        if (priceRangeInvalid) {
+          setFieldInvalid(maxPriceInput, false);
+          priceRangeInvalid = false;
+        }
+        if (activeToastField === "minPrice" || activeToastField === "maxPrice") {
+          hideValidationToast();
+        }
+      } else if (event.target.name === "maxPrice") {
+        setFieldInvalid(maxPriceInput, false);
+        priceRangeInvalid = false;
+        if (activeToastField === "maxPrice") {
+          hideValidationToast();
+        }
+      }
+
+      searchFeedback.textContent = "";
+      searchFeedback.classList.remove("is-success");
+    }
+
+    searchForm.addEventListener("input", clearSearchPriceError);
+    searchForm.addEventListener("change", function (event) {
+      if (event.target.matches("select")) {
+        searchFeedback.textContent = "";
+        searchFeedback.classList.remove("is-success");
+      }
+      clearSearchPriceError(event);
+    });
+
     searchForm.addEventListener("submit", function (event) {
       event.preventDefault();
       const data = new FormData(searchForm);
@@ -389,13 +472,29 @@
         location || type || minPrice !== null || maxPrice !== null || beds || baths
       );
 
-      if (Number.isNaN(minPrice) || Number.isNaN(maxPrice)) {
-        searchFeedback.textContent = "Enter a valid price using numbers, commas, and an optional $ sign.";
-        return;
+      clearSearchErrors();
+      searchFeedback.textContent = "";
+      searchFeedback.classList.remove("is-success");
+
+      const errors = {};
+      if (Number.isNaN(minPrice)) {
+        errors.minPrice = "Please enter a valid minimum price.";
+      }
+      if (Number.isNaN(maxPrice)) {
+        errors.maxPrice = "Please enter a valid maximum price.";
+      }
+      if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
+        errors.maxPrice = "Maximum price must be at least the minimum price.";
+        priceRangeInvalid = true;
       }
 
-      if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
-        searchFeedback.textContent = "Minimum price cannot exceed maximum price.";
+      if (errors.minPrice || errors.maxPrice) {
+        setFieldInvalid(minPriceInput, Boolean(errors.minPrice));
+        setFieldInvalid(maxPriceInput, Boolean(errors.maxPrice));
+        const firstInvalidField = errors.minPrice ? "minPrice" : "maxPrice";
+        const firstInvalidInput = errors.minPrice ? minPriceInput : maxPriceInput;
+        showValidationToast(errors[firstInvalidField], firstInvalidField);
+        firstInvalidInput.focus();
         return;
       }
 
@@ -435,15 +534,37 @@
           (resultCount === 1 ? "listing" : "listings") +
           ". This is not live availability."
         : "";
+      searchFeedback.classList.toggle("is-success", Boolean(searchFeedback.textContent));
       listingsEmpty.hidden = resultCount > 0;
       document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 
-  if (contactForm && contactFeedback) {
-    const nameInput = contactForm.elements.namedItem("name");
-    const emailInput = contactForm.elements.namedItem("email");
-    const messageInput = contactForm.elements.namedItem("message");
+  if (contactForm && messageModal) {
+    const fields = {
+      name: {
+        input: contactForm.elements.namedItem("name")
+      },
+      email: {
+        input: contactForm.elements.namedItem("email")
+      },
+      message: {
+        input: contactForm.elements.namedItem("message")
+      }
+    };
+
+    function clearContactFieldError(event) {
+      const field = fields[event.target.name];
+      if (!field) return;
+
+      setFieldInvalid(field.input, false);
+      if (activeToastField === event.target.name) {
+        hideValidationToast();
+      }
+    }
+
+    contactForm.addEventListener("input", clearContactFieldError);
+    contactForm.addEventListener("change", clearContactFieldError);
 
     contactForm.addEventListener("submit", function (event) {
       event.preventDefault();
@@ -451,34 +572,50 @@
       const name = String(data.get("name") || "").trim();
       const email = String(data.get("email") || "").trim();
       const message = String(data.get("message") || "").trim();
-
-      [nameInput, emailInput, messageInput].forEach(function (input) {
-        input.removeAttribute("aria-invalid");
-      });
+      const errors = {};
 
       if (!name) {
-        nameInput.setAttribute("aria-invalid", "true");
-        contactFeedback.textContent = "Please enter your name.";
-        nameInput.focus();
-        return;
+        errors.name = "Please enter your name.";
       }
-
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        emailInput.setAttribute("aria-invalid", "true");
-        contactFeedback.textContent = email ? "Please enter a valid email address." : "Please enter your email address.";
-        emailInput.focus();
-        return;
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errors.email = email ? "Please enter a valid email address." : "Please enter your email address.";
       }
-
       if (!message) {
-        messageInput.setAttribute("aria-invalid", "true");
-        contactFeedback.textContent = "Please enter a message.";
-        messageInput.focus();
+        errors.message = "Please enter a message.";
+      }
+
+      Object.keys(fields).forEach(function (fieldName) {
+        setFieldInvalid(fields[fieldName].input, Boolean(errors[fieldName]));
+      });
+
+      const firstInvalidField = Object.keys(fields).find(function (fieldName) {
+        return errors[fieldName];
+      });
+      if (firstInvalidField) {
+        showValidationToast(errors[firstInvalidField], firstInvalidField);
+        fields[firstInvalidField].input.focus();
         return;
       }
 
-      contactFeedback.textContent =
-        "Thanks, " + name + ". Your message has not been sent because this preview has no messaging service. Please call (206) 919-6886.";
+      hideValidationToast();
+      messageModal.showModal();
     });
+
+    if (messageModalClose) {
+      messageModalClose.addEventListener("click", function () {
+        messageModal.close();
+      });
+    }
+
+    if (messageModalReset) {
+      messageModalReset.addEventListener("click", function () {
+        contactForm.reset();
+        clearContactFieldError({ target: { name: "name" } });
+        clearContactFieldError({ target: { name: "email" } });
+        clearContactFieldError({ target: { name: "message" } });
+        messageModal.close();
+        fields.name.input.focus();
+      });
+    }
   }
 })();
