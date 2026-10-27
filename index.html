@@ -176,23 +176,11 @@
             </label>
             <label>
               Min Price
-              <select name="minPrice">
-                <option value="">No min</option>
-                <option value="250000">$250,000</option>
-                <option value="400000">$400,000</option>
-                <option value="600000">$600,000</option>
-                <option value="1000000">$1,000,000</option>
-              </select>
+              <input type="text" name="minPrice" inputmode="decimal" autocomplete="off" placeholder="$0" />
             </label>
             <label>
               Max Price
-              <select name="maxPrice">
-                <option value="">No max</option>
-                <option value="500000">$500,000</option>
-                <option value="800000">$800,000</option>
-                <option value="1500000">$1,500,000</option>
-                <option value="3000000">$3,000,000+</option>
-              </select>
+              <input type="text" name="maxPrice" inputmode="decimal" autocomplete="off" placeholder="$1,000,000" />
             </label>
             <button class="btn btn--gold search-widget__submit" type="submit">SEARCH NOW</button>
           </form>
@@ -248,9 +236,6 @@
             </article>
           </div>
           <div class="gallery-indicators" id="gallery-indicators" role="group" aria-label="Gallery slides"></div>
-          <div class="listings__cta">
-            <button class="btn btn--gold" id="view-all-listings" type="button">VIEW ALL LISTINGS</button>
-          </div>
           <p class="listings__empty" id="listings-empty" hidden>No sample listings match those filters. Try changing your search.</p>
         </div>
       </section>

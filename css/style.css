@@ -52,7 +52,7 @@ a {
 }
 
 :focus-visible {
-  outline: 3px solid var(--accent-gold-deep);
+  outline: 3px solid #000000;
   outline-offset: 3px;
 }
 
@@ -478,11 +478,23 @@ textarea {
   font-weight: 400;
 }
 
-.search-widget select {
+.search-widget select,
+.search-widget input {
   height: 40px;
   min-height: 40px;
   padding: 0.4rem 0.75rem;
   font-size: 0.9rem;
+}
+
+select:focus,
+select:active,
+input:focus,
+input:active,
+textarea:focus,
+textarea:active {
+  border-color: #000000;
+  outline: none;
+  box-shadow: 0 0 0 1px #000000;
 }
 
 .contact-form input,
@@ -493,12 +505,6 @@ textarea {
 
 textarea {
   resize: vertical;
-}
-
-.contact-form input:focus-visible,
-.contact-form textarea:focus-visible {
-  border-color: var(--accent-gold-deep);
-  box-shadow: 0 0 0 3px rgba(160, 124, 69, 0.2);
 }
 
 .contact-form__note a {
@@ -621,20 +627,14 @@ textarea {
   width: 7px;
   height: 7px;
   border-radius: 999px;
-  background: rgba(31, 27, 22, 0.3);
+  background: #9a9a9a;
   content: "";
   transition: width 0.2s ease, background-color 0.2s ease;
 }
 
 .gallery-indicator[aria-current="true"]::before {
   width: 20px;
-  background: var(--accent-gold-deep);
-}
-
-.listings__cta {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
+  background: #000000;
 }
 
 .listing-card {
@@ -1303,7 +1303,8 @@ textarea {
     gap: 0.3rem;
   }
 
-  .search-widget select {
+  .search-widget select,
+  .search-widget input {
     height: 38px;
     min-height: 38px;
     padding: 0.35rem 0.55rem;

@@ -14,7 +14,6 @@
   const galleryLightboxPrevious = document.getElementById("gallery-lightbox-prev");
   const galleryLightboxNext = document.getElementById("gallery-lightbox-next");
   const listingsEmpty = document.getElementById("listings-empty");
-  const viewAllListings = document.getElementById("view-all-listings");
   const contactForm = document.getElementById("contact-form");
   const contactFeedback = document.getElementById("contact-feedback");
   const cookieNotice = document.getElementById("cookie-notice");
@@ -367,19 +366,35 @@
   window.addEventListener("resize", updateGalleryIndicators);
   updateGalleryIndicators();
 
+  function parsePrice(value) {
+    const trimmedValue = String(value || "").trim();
+    if (!trimmedValue) return null;
+
+    const normalizedValue = trimmedValue.replace(/[$,\s]/g, "");
+    if (!/^\d+(?:\.\d{1,2})?$/.test(normalizedValue)) return Number.NaN;
+    return Number(normalizedValue);
+  }
+
   if (searchForm && searchFeedback) {
     searchForm.addEventListener("submit", function (event) {
       event.preventDefault();
       const data = new FormData(searchForm);
       const location = String(data.get("location") || "");
       const type = String(data.get("type") || "");
-      const minPrice = Number(data.get("minPrice") || 0);
-      const maxPrice = Number(data.get("maxPrice") || 0);
+      const minPrice = parsePrice(data.get("minPrice"));
+      const maxPrice = parsePrice(data.get("maxPrice"));
       const beds = Number(data.get("beds") || 0);
       const baths = Number(data.get("baths") || 0);
-      const hasFilters = Boolean(location || type || minPrice || maxPrice || beds || baths);
+      const hasFilters = Boolean(
+        location || type || minPrice !== null || maxPrice !== null || beds || baths
+      );
 
-      if (minPrice && maxPrice && minPrice > maxPrice) {
+      if (Number.isNaN(minPrice) || Number.isNaN(maxPrice)) {
+        searchFeedback.textContent = "Enter a valid price using numbers, commas, and an optional $ sign.";
+        return;
+      }
+
+      if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
         searchFeedback.textContent = "Minimum price cannot exceed maximum price.";
         return;
       }
@@ -388,8 +403,8 @@
         const price = Number(card.dataset.price);
         return (!location || card.dataset.location === location) &&
           (!type || card.dataset.type === type) &&
-          (!minPrice || price >= minPrice) &&
-          (!maxPrice || price <= maxPrice) &&
+          (minPrice === null || price >= minPrice) &&
+          (maxPrice === null || price <= maxPrice) &&
           Number(card.dataset.beds) >= beds &&
           Number(card.dataset.baths) >= baths;
       });
@@ -421,21 +436,6 @@
           ". This is not live availability."
         : "";
       listingsEmpty.hidden = resultCount > 0;
-      document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }
-
-  if (viewAllListings && searchForm && searchFeedback && listingsGrid && listingsEmpty) {
-    viewAllListings.addEventListener("click", function () {
-      searchForm.reset();
-      listingCards.forEach(function (card) {
-        card.hidden = false;
-        listingsGrid.appendChild(card);
-      });
-      listingsGrid.scrollTo({ left: 0, behavior: "smooth" });
-      updateGalleryIndicators();
-      listingsEmpty.hidden = true;
-      searchFeedback.textContent = "";
       document.getElementById("listings").scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
