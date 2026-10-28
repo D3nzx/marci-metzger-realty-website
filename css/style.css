@@ -528,6 +528,7 @@ textarea {
 
 .search-widget select,
 .search-widget input {
+  width: 100%;
   height: 40px;
   min-height: 40px;
   padding: 0.4rem 0.75rem;
@@ -1162,10 +1163,10 @@ textarea {
   height: 3.5rem;
   margin-bottom: 1.25rem;
   place-items: center;
-  border: 1px solid var(--accent-gold-deep);
+  border: 1px solid #059669;
   border-radius: 50%;
-  background: var(--light-bg);
-  color: var(--accent-gold-deep);
+  background: #ecfdf5;
+  color: #047857;
   font-family: var(--font-serif);
   font-size: 1.8rem;
 }
@@ -1488,6 +1489,10 @@ textarea {
 
   .search-widget label {
     gap: 0.3rem;
+  }
+
+  .search-widget__field--full {
+    grid-column: 1 / -1;
   }
 
   .search-widget select,
